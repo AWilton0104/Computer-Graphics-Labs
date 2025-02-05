@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-Lab02_Basic_shapes",
+      "appliesTo": "Lab02_Basic_shapes/Lab02_Basic_shapes.cpp",
+      "type": "launch"
+    }
+  ]
+}
