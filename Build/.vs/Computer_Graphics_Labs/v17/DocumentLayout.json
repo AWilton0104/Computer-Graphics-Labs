@@ -1,0 +1,68 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Computer-Graphics-Labs\\Build\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7D28DBFA-5BC9-382B-A0A9-76E91C7BADF7}|Lab03_Textures.vcxproj|D:\\Computer-Graphics-Labs\\Lab03_Textures\\fragmentShader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D28DBFA-5BC9-382B-A0A9-76E91C7BADF7}|Lab03_Textures.vcxproj|D:\\Computer-Graphics-Labs\\Lab03_Textures\\Lab03_Textures.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7D28DBFA-5BC9-382B-A0A9-76E91C7BADF7}|Lab03_Textures.vcxproj|D:\\Computer-Graphics-Labs\\Lab03_Textures\\vertexShader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Lab03_Textures.cpp",
+              "DocumentMoniker": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\Lab03_Textures.cpp",
+              "RelativeDocumentMoniker": "..\\Lab03_Textures\\Lab03_Textures.cpp",
+              "ToolTip": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\Lab03_Textures.cpp",
+              "RelativeToolTip": "..\\Lab03_Textures\\Lab03_Textures.cpp",
+              "ViewState": "AQIAAFoAAAAAAAAAAAAAAHUAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-02-12T13:20:19.602Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "fragmentShader.glsl",
+              "DocumentMoniker": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\fragmentShader.glsl",
+              "RelativeDocumentMoniker": "..\\Lab03_Textures\\fragmentShader.glsl",
+              "ToolTip": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\fragmentShader.glsl",
+              "RelativeToolTip": "..\\Lab03_Textures\\fragmentShader.glsl",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-02-12T13:35:07.466Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "vertexShader.glsl",
+              "DocumentMoniker": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\vertexShader.glsl",
+              "RelativeDocumentMoniker": "..\\Lab03_Textures\\vertexShader.glsl",
+              "ToolTip": "D:\\Computer-Graphics-Labs\\Lab03_Textures\\vertexShader.glsl",
+              "RelativeToolTip": "..\\Lab03_Textures\\vertexShader.glsl",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-02-12T13:33:53.513Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
