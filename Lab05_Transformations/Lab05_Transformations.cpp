@@ -127,8 +127,8 @@ int main( void )
         keyboardInput(window);
         
         // Clear the window
-        glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        //glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+        //glClear(GL_COLOR_BUFFER_BIT);
 
         // Send the VBO to the GPU
         glEnableVertexAttribArray(0);
@@ -139,8 +139,19 @@ int main( void )
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        
+ 
+        //Transformations
+        float angle = Maths::radians(glfwGetTime() * 360.0f / 3.0f);
+        glm::mat4 translate = Maths::translate(glm::vec3(sin(glfwGetTime()) * 0.5f, sin(glfwGetTime()* glfwGetTime()) * 0.5f, 0.0f));
+        glm::mat4 scale = Maths::scale(glm::vec3(cosh(glfwGetTime()) * 1.0f* cos(glfwGetTime()), cos(glfwGetTime()) * 1.0f * cos(glfwGetTime()), 0.0f));
+        glm::mat4 rotate = Maths::rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        // Send the transformation matrix to the shader
+        glm::mat4 transformation = rotate * translate * rotate * scale * rotate * scale / rotate;
+
+        unsigned int transformationID = glGetUniformLocation(shaderID, "transformation");
+        glUniformMatrix4fv(transformationID, 1, GL_FALSE, &transformation[0][0]);
         // Draw the triangles
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int),
                        GL_UNSIGNED_INT, 0);
         

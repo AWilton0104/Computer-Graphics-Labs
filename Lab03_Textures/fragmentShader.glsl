@@ -4,7 +4,7 @@ in vec2 UV;
 
 out vec3 colour;
 
-uniform sampler2D texture1;;
+uniform sampler2D texture1;
 uniform sampler2D texture2;
 
 void main()

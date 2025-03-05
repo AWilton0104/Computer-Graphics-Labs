@@ -12,6 +12,8 @@
 // Function prototypes
 void keyboardInput(GLFWwindow *window);
 
+Camera camera(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+
 int main( void )
 {
     // =========================================================================
@@ -191,7 +193,7 @@ int main( void )
     
     // Load the textures
     unsigned int texture;
-    texture = loadTexture("../assets/crate.jpg");
+    texture = loadTexture("../assets/mario.png");
     
     // Send the texture uniforms to the fragment shader
     glUseProgram(shaderID);
@@ -206,8 +208,6 @@ int main( void )
         keyboardInput(window);
         
         // Clear the window
-        glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
 
         // Send the VBO to the GPU
         glEnableVertexAttribArray(0);
@@ -218,6 +218,20 @@ int main( void )
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        //Model 
+        float angle = Maths::radians(glfwGetTime() * 360.0f / 3.0f);
+        glm::mat4 translate = Maths::translate(glm::vec3(sin(glfwGetTime()*angle), 0.0f, -2.0f));
+        glm::mat4 scale = Maths::scale(glm::vec3(cos(glfwGetTime()) * 1.0f * cos(glfwGetTime()), sin(glfwGetTime()) * 1.0f * sin(glfwGetTime()), sin(glfwGetTime()) * 1.0f * cos(glfwGetTime())));
+        glm::mat4 rotate = Maths::rotate(angle, glm::vec3(-1.0f, 3.3f, 1.0f));
+        glm::mat4 model = translate * rotate * scale;
+
+        //Camera 
+        camera.calculateMatrices(); 
+
+        //MVP
+        glm::mat4 MVP = camera.projection * camera.view * model;
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
         
         // Draw the triangles
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
