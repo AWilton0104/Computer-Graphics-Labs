@@ -10,6 +10,7 @@
 
 // Function prototypes
 void keyboardInput(GLFWwindow *window);
+void mouseInput(GLFWwindow *window); 
 
 // Create camera object
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -23,6 +24,10 @@ struct Object
     float angle = 0.0f;
     std::string name;
 };
+
+// Frame timer
+float previousTime = 0.0f;
+float deltaTime = 0.0f;
 
 int main( void )
 {
@@ -73,6 +78,9 @@ int main( void )
     
     // Ensure we can capture keyboard inputs
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+    glfwPollEvents(); 
+    glfwSetCursorPos(window, 1024 / 2, 768 / 2); 
     
     // Define cube object
     // Define vertices
@@ -239,13 +247,18 @@ int main( void )
         object.scale    = glm::vec3(0.5f, 0.5f, 0.5f);
         object.angle    = Maths::radians(20.0f * i);
         objects.push_back(object);
-    }
-    
+    }   
+   
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
-        // Get inputs
+        //Frame timer
+        float time = glfwGetTime();
+        deltaTime = time - previousTime;
+        previousTime = time;
+
         keyboardInput(window);
+        mouseInput(window);
         
         // Clear the window
         glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
@@ -262,7 +275,7 @@ int main( void )
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
         
         // Calculate view and projection matrices
-        camera.calculateMatrices();
+        camera.calculateMatrices(deltaTime);
         
         // Loop through objects and draw each one
         for (int i = 0; i < static_cast<unsigned int>(objects.size()); i++)
@@ -309,4 +322,34 @@ void keyboardInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    // Move the camera using WSAD keys
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.eye += camera.front * deltaTime * 5.0f;
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.eye -= camera.front * deltaTime * 5.0f;
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.eye -= camera.right * deltaTime * 5.0f;
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.eye += camera.right * deltaTime * 5.0f;
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.jump();
+
+
+}
+
+void mouseInput(GLFWwindow *window) 
+{
+    // Get mouse cursor position and reset to centre
+    double xPos, yPos;
+    glfwGetCursorPos(window, &xPos, &yPos);
+    glfwSetCursorPos(window, 1024 / 2, 768 / 2);
+
+    // Update yaw and pitch angles
+    camera.yaw += 0.0005f * float(xPos - 1024 / 2);
+    camera.pitch += 0.0005f * float(768 / 2 - yPos);
 }

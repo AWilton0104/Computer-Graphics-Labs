@@ -12,7 +12,17 @@
 // Function prototypes
 void keyboardInput(GLFWwindow *window);
 
-Camera camera(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+Camera camera(glm::vec3(1.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+
+struct Object {
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    float angle = 0.0f;
+    std::string name;
+};
+
+
 
 int main( void )
 {
@@ -58,6 +68,9 @@ int main( void )
     // End of window creation
     // =========================================================================
     
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
     // Ensure we can capture keyboard inputs
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     
@@ -193,14 +206,39 @@ int main( void )
     
     // Load the textures
     unsigned int texture;
-    texture = loadTexture("../assets/mario.png");
+    texture = loadTexture("../assets/crate.jpg");
     
     // Send the texture uniforms to the fragment shader
     glUseProgram(shaderID);
     unsigned int textureID;
     textureID = glGetUniformLocation(shaderID, "texture");
     glUniform1i(textureID, 0);
-    
+
+    glm::vec3 positions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -10.0f),
+        glm::vec3(-3.0f, -2.0f, -3.0f),
+        glm::vec3(-4.0f, -2.0f, -8.0f),
+        glm::vec3(2.0f,  2.0f, -6.0f),
+        glm::vec3(-4.0f,  3.0f, -8.0f),
+        glm::vec3(0.0f, -2.0f, -5.0f),
+        glm::vec3(4.0f,  2.0f, -4.0f),
+        glm::vec3(2.0f,  0.0f, -2.0f),
+        glm::vec3(-1.0f,  1.0f, -2.0f)
+    };
+
+    std::vector<Object> objects;
+    Object object;
+    object.name = "cube";
+
+    for (unsigned int i = 0; i < 10; i++) {
+        object.position = positions[i];
+        object.rotation = glm::vec3(1.0f, 1.0f, 1.0f);
+        object.scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        object.angle = Maths::radians(20.0f * i);
+        objects.push_back(object);
+    }
+   
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -208,6 +246,7 @@ int main( void )
         keyboardInput(window);
         
         // Clear the window
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Send the VBO to the GPU
         glEnableVertexAttribArray(0);
@@ -219,23 +258,28 @@ int main( void )
         glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        //Model 
-        float angle = Maths::radians(glfwGetTime() * 360.0f / 3.0f);
-        glm::mat4 translate = Maths::translate(glm::vec3(sin(glfwGetTime()*angle), 0.0f, -2.0f));
-        glm::mat4 scale = Maths::scale(glm::vec3(cos(glfwGetTime()) * 1.0f * cos(glfwGetTime()), sin(glfwGetTime()) * 1.0f * sin(glfwGetTime()), sin(glfwGetTime()) * 1.0f * cos(glfwGetTime())));
-        glm::mat4 rotate = Maths::rotate(angle, glm::vec3(-1.0f, 3.3f, 1.0f));
-        glm::mat4 model = translate * rotate * scale;
+        camera.eye = glm::vec3(0.0f, 0.0f, 5.0f);
+        camera.target = objects[0].position;
+        camera.calculateMatrices();
 
-        //Camera 
-        camera.calculateMatrices(); 
+        for (int i = 0; i < static_cast<unsigned int>(objects.size()); i++)
+        {
+            // Calculate the model matrix
+            glm::mat4 translate = Maths::translate(objects[i].position); 
+            glm::mat4 scale = Maths::scale(objects[i].scale); 
+            glm::mat4 rotate = Maths::rotate(objects[i].angle, objects[i].rotation); 
+            glm::mat4 model = translate * rotate * scale; 
 
-        //MVP
-        glm::mat4 MVP = camera.projection * camera.view * model;
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
-        
-        // Draw the triangles
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+            // Calculate the MVP matrix
+            glm::mat4 MVP = camera.projection * camera.view * model; 
+
+            // Send MVP matrix to the vertex shader
+            glUniformMatrix4fv(glGetUniformLocation(shaderID, "MVP"), 1, GL_FALSE, &MVP[0][0]); 
+
+            // Draw the triangles
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); 
+            glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0); 
+        } 
         
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
