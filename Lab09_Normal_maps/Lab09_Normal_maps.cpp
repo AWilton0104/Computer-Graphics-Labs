@@ -104,6 +104,7 @@ int main( void )
     
     // Load the textures
     teapot.addTexture("../assets/blue.bmp", "diffuse");
+    teapot.addTexture("../assets/diamond_normal.png", "normal");
     
     // Define teapot object lighting properties
     teapot.ka = 0.2f;
@@ -134,13 +135,13 @@ int main( void )
     glm::vec3 teapotPositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f),
         glm::vec3( 2.0f,  5.0f, -10.0f),
-        glm::vec3(-3.0f, -2.0f, -3.0f),
-        glm::vec3(-4.0f, -2.0f, -8.0f),
+        glm::vec3(-3.0f,  3.0f, -3.0f),
+        glm::vec3(-4.0f,  6.0f, -8.0f),
         glm::vec3( 2.0f,  2.0f, -6.0f),
         glm::vec3(-4.0f,  3.0f, -8.0f),
-        glm::vec3( 0.0f, -2.0f, -5.0f),
+        glm::vec3( 0.0f,  7.0f, -5.0f),
         glm::vec3( 4.0f,  2.0f, -4.0f),
-        glm::vec3( 2.0f,  0.0f, -2.0f),
+        glm::vec3( 2.0f,  9.0f, -2.0f),
         glm::vec3(-1.0f,  1.0f, -2.0f)
     };
 
@@ -152,10 +153,50 @@ int main( void )
     {
         object.position = teapotPositions[i];
         object.rotation = glm::vec3(1.0f, 1.0f, 1.0f);
-        object.scale    = glm::vec3(0.75f, 0.75f, 0.75f);
+        object.scale    = glm::vec3(0.25f, 0.25f, 0.25f);
         object.angle    = Maths::radians(20.0f * i);
         objects.push_back(object);
     }
+
+    // Load a 2D plane model for the floor and add textures
+    Model floor("../assets/plane.obj");
+    floor.addTexture("../assets/stones_diffuse.png", "diffuse");
+    floor.addTexture("../assets/stones_normal.png", "normal");
+    floor.addTexture("../assets/neutral_specular.png", "specular"); 
+
+    // Define floor light properties
+    floor.ka = 0.2f;
+    floor.kd = 1.0f;
+    floor.ks = 1.0f;
+    floor.Ns = 20.0f;
+
+    // Add floor model to objects vector
+    object.position = glm::vec3(0.0f, -0.85f, 0.0f);
+    object.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    object.rotation = glm::vec3(0.0f, 1.0f, 0.0f);
+    object.angle = 0.0f;
+    object.name = "floor";
+    objects.push_back(object);
+
+    // Load a 2D plane model for the wall and add textures
+    Model wall("../assets/plane.obj");
+    wall.addTexture("../assets/bricks_diffuse.png", "diffuse");
+    wall.addTexture("../assets/bricks_normal.png", "normal");
+    wall.addTexture("../assets/bricks_specular.png", "specular");
+
+    // Define wall light properties
+    wall.ka = 0.2f;
+    wall.kd = 1.0f;
+    wall.ks = 1.0f;
+    wall.Ns = 20.0f;
+
+    // Add wall model to objects vector
+    object.position = glm::vec3(0.0f, 4.0f, -5.0f);
+    object.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    object.rotation = glm::vec3(1.0f, 0.0f, 0.0f);
+    object.angle = Maths::radians(90.0f);
+    object.name = "wall";
+    objects.push_back(object);
     
     // Render loop
     while (!glfwWindowShouldClose(window))
@@ -175,7 +216,7 @@ int main( void )
         
         // Calculate view and projection matrices
         camera.target = camera.eye + camera.front;
-        camera.calculateMatrices();
+        camera.calculateMatrices(deltaTime);
         
         // Activate shader
         glUseProgram(shaderID);
@@ -188,9 +229,17 @@ int main( void )
         {
             // Calculate model matrix
             glm::mat4 translate = Maths::translate(objects[i].position);
-            glm::mat4 scale     = Maths::scale(objects[i].scale);
-            glm::mat4 rotate    = Maths::rotate(objects[i].angle, objects[i].rotation);
-            glm::mat4 model     = translate * rotate * scale;
+            glm::mat4 scale = Maths::scale(glm::vec3(cos(glfwGetTime()) * 1.0f * cos(glfwGetTime()),   1.0f * cos(glfwGetTime()) , sin(glfwGetTime()) * 1.0f * cos(glfwGetTime())));
+            glm::mat4 rotate;
+            if (objects[i].name == "teapot") {
+                rotate = Maths::rotate(objects[i].angle * glfwGetTime(), objects[i].rotation);
+                scale += Maths::scale(objects[i].scale);
+            }
+            else {
+                rotate = Maths::rotate(objects[i].angle, objects[i].rotation); 
+                scale = Maths::scale(objects[i].scale);
+            }
+            glm::mat4 model = translate * rotate * scale;
             
             // Send the MVP and MV matrices to the vertex shader
             glm::mat4 MV  = camera.view * model;
@@ -201,7 +250,15 @@ int main( void )
             // Draw the model
             if (objects[i].name == "teapot")
                 teapot.draw(shaderID);
+
+            if (objects[i].name == "floor")
+                floor.draw(shaderID);
+
+            if (objects[i].name == "wall")
+                wall.draw(shaderID); 
         }
+
+
         
         // Draw light sources
         lightSources.draw(lightShaderID, camera.view, camera.projection, sphere);

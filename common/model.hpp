@@ -24,6 +24,8 @@ public:
     std::vector<Texture>   textures;
     unsigned int textureID;
     float ka, kd, ks, Ns;
+    std::vector<glm::vec3> tangents; 
+    std::vector<glm::vec3> bitangents; 
     
     // Constructor
     Model(const char *path);
@@ -44,6 +46,8 @@ private:
     unsigned int vertexBuffer;
     unsigned int uvBuffer;
     unsigned int normalBuffer;
+    unsigned int tangentBuffer;
+    unsigned int bitangentBuffer;
     
     // Load .obj file method
     bool loadObj(const char *path,
@@ -56,4 +60,6 @@ private:
     
     // Load texture
     unsigned int loadTexture(const char *path);
+
+    void calculateTangents(); 
 };

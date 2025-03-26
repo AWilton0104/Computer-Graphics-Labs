@@ -1,0 +1,4 @@
+﻿  Lab09_Normal_maps.cpp
+D:\Computer-Graphics-Labs\Lab09_Normal_maps\Lab09_Normal_maps.cpp(205,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Computer-Graphics-Labs\Lab09_Normal_maps\Lab09_Normal_maps.cpp(235,57): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  Lab09_Normal_maps.vcxproj -> D:\Computer-Graphics-Labs\Build\Debug\Lab09_Normal_maps.exe
