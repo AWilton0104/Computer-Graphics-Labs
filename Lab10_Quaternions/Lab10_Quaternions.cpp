@@ -19,6 +19,8 @@ void mouseInput(GLFWwindow *window);
 float previousTime = 0.0f;  // time of previous iteration of the loop
 float deltaTime    = 0.0f;  // time elapsed since the previous frame
 
+bool thirdPerson = false;
+
 // Create camera object
 Camera camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -161,7 +163,7 @@ int main( void )
         
         // Calculate view and projection matrices
         camera.target = camera.eye + camera.front;
-        camera.calculateMatrices();
+        camera.quaternionCamera();
         
         // Activate shader
         glUseProgram(shaderID);
@@ -226,6 +228,13 @@ void keyboardInput(GLFWwindow *window)
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.eye += 5.0f * deltaTime * camera.right;
+
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        camera.thirdPerson = false;
+
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        camera.thirdPerson = true;
+
 }
 
 void mouseInput(GLFWwindow *window)

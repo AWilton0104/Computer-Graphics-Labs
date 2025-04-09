@@ -16,6 +16,9 @@ public:
     float jumpTimer = jumpTime;
     float jumpHeight = 2.5f;
     bool jumping = false;
+    bool thirdPerson = true;
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, -1.0f);
+    Quaternion orientation = Quaternion(pitch, yaw); 
 
 
     // Camera vectors
@@ -27,7 +30,7 @@ public:
     glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f); 
 
     //Camera Angles
-    float yaw = Maths::radians(-90.0f);
+    float yaw = 0.0f;
     float pitch = 0.0f;
     float roll = 0.0f;
 
@@ -44,4 +47,6 @@ public:
     void calculateCameraVectors();
 
     void jump();
+    
+    void quaternionCamera();  
 };
